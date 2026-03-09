@@ -1,0 +1,865 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    /* --- THE WOBBLE KILLER --- */
+    overflow-x: hidden; 
+    position: relative;
+    /* Ensures centering works perfectly */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- Cover Page Styles --- */
+.cover-page {
+      position: fixed; 
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 410px; 
+      height: 100vh; 
+      background-color: #E2D7C1;  
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: top 1s ease-in-out;
+      z-index: 9999;
+      overflow: hidden; /* Prevents text inside from pushing out */
+  }
+
+  .cover-page.hidden {
+      top: -100vh; 
+  }
+
+  .cover-subtitle {
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      color: #555;
+      margin-bottom: 10px;
+  }
+
+  .cover-names {
+      font-size: 2.8rem;
+      margin: 0;
+      font-weight: 500;
+      text-align: center;
+      color: #333;
+  }
+
+  .cover-date {
+      font-size: 1rem;
+      color: #555;
+      margin-top: 15px;
+  }
+
+  .open-btn {
+      margin-top: 40px;
+      padding: 12px 30px;
+      background-color: #333;
+      color: #E2D7C1; 
+      border: none;
+      border-radius: 25px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s, background-color 0.3s;
+  }
+
+  .open-btn:hover {
+      background-color: #555;
+      transform: scale(1.05); 
+  }
+  
+  body {
+      background-color: #ffffff; 
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center; 
+  }
+
+.mobile-wrapper {
+      width: 100%;
+      max-width: 410px; /* Your updated slim width */
+      margin: 0 auto;   /* NEW: Centers the whole invitation on the screen */
+      min-height: 100vh;
+      position: relative; /* NEW: Anchors your floating particles inside */
+      overflow: hidden;   /* NEW: Kills the side-to-side wobble */
+      
+      background-color: #F8F5EF; 
+      background-image: url('image/floral_background.png'); 
+      background-size: 100% auto; 
+      background-position: top center;
+      background-repeat: no-repeat; 
+      
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      padding: 0px 20px 100px 20px; 
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column; 
+      align-items: center;
+  }
+
+  /* The Beige Card */
+  .rsvp-card {
+      background-color: #E2D7C1; 
+      border-radius: 15px;
+      padding: 30px 30px 15px 30px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+
+  .rsvp-title {
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+  }
+
+  .rsvp-subtitle {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-bottom: 25px;
+      color: #444;
+  }
+
+  /* Form Labels and Inputs */
+  label {
+      display: block;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+      color: #333;
+  }
+  
+  .required {
+      color: red;
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  select,
+  textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box; 
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+  }
+
+  textarea {
+      resize: vertical;
+      height: 100px;
+  }
+
+  /* Submit & Cancel Buttons */
+  .button-group {
+      display: flex;
+      gap: 15px;
+  }
+
+  #customRsvpForm {
+      margin-bottom: 0;
+  }
+
+  .button-group button {
+      flex: 1;
+      padding: 12px;
+      background-color: transparent;
+      border: 1px solid #333;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+  }
+
+  button:hover {
+      background-color: rgba(0,0,0,0.05);
+  }
+
+/* --- Bottom Navigation Bar --- */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 410px; 
+    background-color: #6F4E4C; 
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 12px 0 10px 0; 
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2); 
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    gap: 5px; 
+    transition: transform 0.2s ease;
+    padding: 0;
+}
+
+.nav-item:hover {
+    transform: translateY(-3px); 
+}
+
+/* Styling the Outline SVGs */
+.nav-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #FFFFFF; 
+    stroke-width: 1.5;
+    fill: none; 
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Styling the Text Labels */
+.nav-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: #FFFFFF; 
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+/* --- Hero Section Styles --- */
+    .hero-section {
+        width: 100%;
+        height: auto; 
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 220px; 
+        padding-bottom: 250px; 
+        align-items: center;
+        text-align: center;
+        margin-bottom: 0px; 
+    }
+
+  .hero-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: #666;
+      margin-bottom: 40px;
+  }
+
+  .hero-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem; 
+      color: #99845E; 
+      margin: 0;
+      line-height: 1.1;
+      font-weight: 500;
+      letter-spacing: 1px;
+  }
+
+  .hero-ampersand {
+      font-size: 2.5rem;
+      font-style: italic; 
+      color: #99845E;
+  }
+
+  .hero-date {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 1.5px;
+      color: #666;
+      margin-top: 24px;
+  }
+
+  /* --- Information Section Styles --- */
+  .info-section {
+      width: 100%;
+      padding: 40px 20px;
+      text-align: center;
+      margin-bottom: 40px;
+      background-color: rgba(255, 255, 255, 0.4); 
+      border-radius: 15px 15px 0 0; 
+      margin-top: -40px; 
+  }
+
+  .info-small {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.6;
+      font-weight: 400;
+  }
+
+ .parents-names {
+      font-family: 'Great Vibes', cursive; 
+      font-size: 1.6rem; /* NEW: Smaller size */
+      color: #999999;    /* NEW: Lighter, softer grey */
+      margin: 10px 0 25px 0;
+      margin-bottom: 20px !important; 
+      font-weight: 400;
+      line-height: 1.2;
+  }
+
+  .ampersand-small {
+      font-family: 'Great Vibes', cursive;
+      font-size: 1.8rem;
+  }
+
+  .and-separator {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    color: #99845E; /* Your gold accent color */
+    margin-top: -5px !important;  /* Negative margin pulls the & upward closer to the father's name */
+    margin-bottom: 2px;          /* Small gap before the mother's name */
+    font-size: 1.1rem;           /* Adjust size if it looks too bulky */
+    font-weight: 400;
+}
+
+.full-names {
+      /* --- THE CLEAN ROMAN FONT --- */
+      font-family: 'Cinzel', serif; 
+      
+      font-size: 1.8rem; /* Bumped up slightly since small-caps makes letters shorter */
+      color: #99845E;    
+      margin: 25px 0 30px 0;
+      font-weight: 500;  /* 500 is the sweet spot for elegance */
+      line-height: 1.4; 
+      letter-spacing: 1px;
+      
+      /* --- THE MAGIC TRICK --- */
+      font-variant: small-caps; /* Makes lowercase letters look like small uppercase letters */
+  }
+
+  .ampersand-large {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      color: #bca47a; 
+      display: block; 
+      margin: 10px 0; 
+      font-style: normal; /* Removes the italic so it matches your picture exactly */
+  }
+
+  .details-block {
+      margin-bottom: 25px;
+  }
+
+  .details-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1rem;
+      color: #555;
+      font-weight: 600;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+  }
+
+  .details-text {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      color: #666;
+      line-height: 1.6;
+      font-weight: 400;
+      margin: 0;
+  }
+
+  .save-date-btn {
+      margin-top: 10px;
+      padding: 10px 25px;
+      background-color: transparent;
+      color: #7A7A7A;
+      border: 1px solid #7A7A7A;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none; 
+      display: inline-block;
+      width: 80%; 
+  }
+
+  .save-date-btn:hover {
+      background-color: #7A7A7A;
+      color: #fff;
+  }
+
+  /* --- Slow Pop-up Animation --- */
+  .fade-in {
+      opacity: 0;
+      transform: translateY(60px); 
+      transition: opacity 1.5s ease-out, transform 1.5s ease-out; 
+  }
+
+  .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0); 
+  }
+
+/* --- Programme Section Styles --- */
+  .programme-card {
+      background-color: rgba(255, 255, 255, 0.85); 
+      border-radius: 20px;
+      padding: 40px 20px;
+      margin: 30px 20px 50px 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.04); 
+  }
+
+  /* --- Hashtag & Countdown Styles --- */
+  .countdown-section {
+      margin-bottom: 60px;
+  }
+
+  .hashtag {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      color: #8C8C8C; 
+      font-weight: 400;
+      letter-spacing: 2px;
+      margin-bottom: 50px;
+  }
+
+  .countdown-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px; 
+      padding: 0 15px;
+  }
+
+  .time-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 70px; 
+  }
+
+  .time-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.2rem;
+      color: #7A7A7A;
+      font-weight: 300; 
+      margin-bottom: 5px;
+  }
+
+  .time-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      color: #999;
+      text-transform: capitalize;
+  }
+
+/* --- Attendance & Wishes Section Styles --- */
+  .attendance-wishes-section {
+      margin-bottom: 60px;
+      width: 100%;
+      text-align: center;
+  }
+
+  .attendance-stats {
+      display: flex;
+      justify-content: center;
+      gap: 60px; 
+      margin-bottom: 50px;
+  }
+
+  .stat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .stat-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 300; 
+      color: #7A7A7A;
+      line-height: 1;
+      margin-bottom: 10px;
+  }
+
+  .stat-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      color: #999;
+  }
+
+/* --- Wishes List Styles --- */
+  .wishes-list {
+      margin-bottom: 40px;
+      padding: 0 20px;
+      max-height: 250px; 
+      overflow-y: auto; 
+  }
+
+  .wishes-list::-webkit-scrollbar {
+      width: 6px; 
+  }
+  
+  .wishes-list::-webkit-scrollbar-track {
+      background: transparent; 
+  }
+  
+  .wishes-list::-webkit-scrollbar-thumb {
+      background: #D5C7A3; 
+      border-radius: 10px; 
+  }
+
+  .wish-item {
+      margin-bottom: 25px;
+  }
+
+  .wish-text {
+      font-family: 'Montserrat', sans-serif;
+      font-style: italic; 
+      color: #888;
+      font-size: 0.95rem;
+      margin: 0 0 5px 0;
+  }
+
+  .wish-name {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600; 
+      color: #666;
+      font-size: 0.9rem;
+      margin: 0;
+  }
+
+  /* --- Action Buttons Styles --- */
+  .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 60px;
+      padding: 0 20px;
+  }
+
+  .action-btn {
+      flex: 1; 
+      padding: 12px 10px;
+      background-color: transparent;
+      color: #7A7A7A;
+      border: 1px solid #7A7A7A;
+      border-radius: 8px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.3s;
+  }
+
+  .action-btn:hover {
+      background-color: #7A7A7A;
+      color: #fff;
+  }
+
+  /* --- Footer Watermark Styles --- */
+  .footer-watermark {
+      opacity: 0.6; 
+      margin-bottom: 20px;
+  }
+
+  .footer-watermark p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.7rem;
+      margin: 0;
+      color: #999;
+  }
+
+  .footer-watermark h4 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      margin: 5px 0 0 0;
+      color: #7A7A7A;
+      font-weight: 600;
+  }
+
+  /* Makes sure the YouTube video is fully responsive */
+  .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%; 
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px; 
+      background-color: #000;
+  }
+
+  .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+  }
+
+/* --- Base Styles for White Popups (Music, Contact, Lokasi) --- */
+  .white-popup {
+      position: fixed;
+      bottom: 85px; 
+      left: 50%;
+      transform: translateX(-50%) translateY(30px);
+      width: 90%;
+      max-width: 400px;
+      background: #ffffff; 
+      border-radius: 20px;
+      padding: 25px 20px;
+      box-sizing: border-box;
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      
+      /* --- NEW STRONGER SHADOW --- */
+      /* This uses two layers: one for a wide, deep blur, and one for a sharp edge drop */
+      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.35), 0 5px 15px rgba(0, 0, 0, 0.2); 
+      
+      text-align: center;
+  }
+
+  .white-popup.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+  }
+
+  .popup-title-dark {
+      color: #333333;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin: 0 0 15px 0;
+      font-weight: 600;
+  }
+
+  .close-popup-btn-dark {
+      margin-top: 15px;
+      padding: 8px 25px;
+      background: transparent;
+      color: #7A7A7A;
+      border: 1px solid #cccccc;
+      border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.3s;
+  }
+
+  .close-popup-btn-dark:hover {
+      background: rgba(0,0,0,0.05);
+  }
+
+  /* --- Hubungi White Pop-up Styles --- */
+  .contact-popup-container {
+      display: flex;
+      flex-direction: column;
+  }
+
+  .contact-area {
+      display: flex;
+      flex-direction: column;
+      gap: 12px; 
+      margin-bottom: 20px;
+  }
+
+  .contact-outline-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 12px 15px;
+      background-color: transparent;
+      border: 1px solid #7A7A7A; 
+      border-radius: 12px; 
+      text-decoration: none; 
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+  }
+
+  .contact-outline-btn:hover {
+      background-color: rgba(0,0,0,0.05); 
+  }
+
+  .contact-outline-content {
+      display: flex;
+      align-items: center;
+  }
+
+  .contact-outline-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+  }
+
+  .contact-outline-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #333333; 
+      text-decoration: none;
+  }
+
+  .contact-outline-role {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.75rem;
+      color: #7A7A7A; 
+      font-style: italic;
+      text-decoration: none;
+      margin-top: 2px;
+  }
+  
+  .contact-outline-btn .contact-icon {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+  }
+
+  /* --- Lokasi Pop-up Specific Styles --- */
+  .location-details p {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.9rem;
+      color: #555555;
+      line-height: 1.6;
+      margin-bottom: 25px;
+  }
+
+  .location-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+  }
+
+  .loc-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 10px;
+      background-color: transparent;
+      color: #333333;
+      border: 1px solid #333333; 
+      border-radius: 12px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+  }
+
+  .loc-btn:hover {
+      background-color: rgba(0,0,0,0.05); 
+  }
+
+  .loc-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+  }
+
+/* ========================================== */
+  /* FLOATING PARTICLES (FAIRY DUST) - UPDATED  */
+  /* ========================================== */
+  
+.particles-container {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 410px; /* SYNCED TO 410 */
+    height: 100vh;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .particle {
+      position: absolute;
+      bottom: -50px; /* NEW: Lowered starting position slightly for larger particles */
+      
+      /* --- NEW: MUCH MORE TRANSPARENT (Lowered Alpha values) --- */
+      /* These colors are now extremely faint so they look like soft orbs */
+      background-color: rgba(153, 132, 94, 0.15); /* Faded gold (15% opacity) */
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(153, 132, 94, 0.1); /* Very faint soft glow */
+      
+      animation: floatUp infinite linear;
+  }
+
+  /* --- NEW: MUCH BIGGER SIZES (bokeh effect) --- */
+  /* Assign random sizes, starting positions, speeds, and delays to each particle so it looks natural */
+  /* OLD size range: 3px - 8px */
+  /* NEW size range: 10px - 25px */
+
+  .particle:nth-child(1)  { width: 18px; height: 18px; left: 10%; animation-duration: 15s; animation-delay: 0s; }
+  .particle:nth-child(2)  { width: 12px; height: 12px; left: 25%; animation-duration: 20s; animation-delay: 4s; }
+  .particle:nth-child(3)  { width: 25px; height: 25px; left: 40%; animation-duration: 18s; animation-delay: 2s; } /* Biggest one */
+  .particle:nth-child(4)  { width: 15px; height: 15px; left: 55%; animation-duration: 22s; animation-delay: 8s; }
+  .particle:nth-child(5)  { width: 21px; height: 21px; left: 70%; animation-duration: 16s; animation-delay: 5s; }
+  .particle:nth-child(6)  { width: 12px; height: 12px; left: 85%; animation-duration: 19s; animation-delay: 1s; }
+  .particle:nth-child(7)  { width: 18px; height: 18px; left: 50%; animation-duration: 25s; animation-delay: 7s; }
+  .particle:nth-child(8)  { width: 15px; height: 15px; left: 80%; animation-duration: 21s; animation-delay: 3s; }
+  .particle:nth-child(9)  { width: 10px; height: 10px; left: 15%; animation-duration: 17s; animation-delay: 6s; } /* Smallest one */
+  .particle:nth-child(10) { width: 21px; height: 21px; left: 90%; animation-duration: 24s; animation-delay: 9s; }
+
+  @keyframes floatUp {
+      0% {
+          transform: translateY(0) translateX(0);
+          opacity: 0;
+      }
+      10% {
+          opacity: 1; /* Fades in smoothly as it enters the screen */
+      }
+      90% {
+          opacity: 1; 
+      }
+      100% {
+          transform: translateY(-120vh) translateX(30px); /* Increased vertical distance slightly for larger wrapper */
+          opacity: 0; /* Fades out smoothly */
+      }
+  }
+
+  /* Safety catch for images and inputs */
+img, input, select, textarea, .rsvp-card {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* Customizes the scrollbar inside the Wishes box */
+#wishes-list::-webkit-scrollbar {
+    width: 4px; /* Very thin */
+}
+
+#wishes-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#wishes-list::-webkit-scrollbar-thumb {
+    background: rgba(153, 130, 94, 0.3); /* Your gold accent color, but faint */
+    border-radius: 10px;
+}
+
+/* This class will be added to the body to freeze scrolling */
+.no-scroll {
+    overflow: hidden;
+    height: 100vh;
+    touch-action: none; /* Prevents touch-scrolling on mobile */
+}
