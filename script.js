@@ -194,7 +194,7 @@ function startWishesAutoScroll() {
     
     let exactScroll = wishesBox.scrollTop;
     let lastTime = performance.now();
-    const speedPerSecond = 15; // Adjust this number to make it faster/slower!
+    const speedPerSecond = 30; // Adjust this number to make it faster/slower!
 
     function smoothScroll(currentTime) {
         if (!isUserInteracting) {

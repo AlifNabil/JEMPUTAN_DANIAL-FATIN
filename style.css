@@ -68,16 +68,25 @@ body { background-color: #ffffff; font-family: 'Montserrat', sans-serif; }
     padding: 0 20px; 
     max-height: 250px; 
     overflow-y: auto; 
-    /* --- HARDWARE ACCELERATION FOR SMOOTH SCROLL --- */
-    transform: translateZ(0); 
     -webkit-overflow-scrolling: touch; 
-    will-change: scroll-position;
+    
+    /* --- SUB-PIXEL SMOOTHING FIX --- */
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
 }
 
 .wishes-list::-webkit-scrollbar { width: 6px; }
 .wishes-list::-webkit-scrollbar-track { background: transparent; }
 .wishes-list::-webkit-scrollbar-thumb { background: rgba(153, 130, 94, 0.3); border-radius: 10px; }
-.wish-item { margin-bottom: 25px; }
+
+.wish-item { 
+    margin-bottom: 25px; 
+    
+    /* --- FORCES TEXT TO GLIDE BETWEEN PIXELS --- */
+    transform: translateZ(0); 
+    backface-visibility: hidden;
+}
 .wish-text { font-style: italic; color: #888; font-size: 0.95rem; margin: 0 0 5px 0; }
 .wish-name { font-weight: 600; color: #666; font-size: 0.9rem; margin: 0; }
 
