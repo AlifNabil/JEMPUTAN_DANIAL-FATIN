@@ -185,67 +185,62 @@ function loadRSVPData() {
 }
 document.addEventListener('DOMContentLoaded', loadRSVPData);
 
-// --- 8. WISHES SCROLL & FADE-IN OBSERVER ---
+// --- 8. WISHES SCROLL (Hardware Accelerated & Time-Based) ---
 function startWishesAutoScroll() {
     const wishesBox = document.getElementById('wishes-list');
     let animationId;
     let isUserInteracting = false;
     let resumeTimeout;
     
-    // We use a separate variable to track exact fractional pixels for super smooth, slow scrolling
     let exactScroll = wishesBox.scrollTop;
+    let lastTime = performance.now();
+    const speedPerSecond = 15; // Adjust this number to make it faster/slower!
 
-    function smoothScroll() {
+    function smoothScroll(currentTime) {
         if (!isUserInteracting) {
-            // SLOWER SPEED: Changed from 0.5 to 0.2
-            exactScroll += 0.2; 
+            // Calculate how much time passed since the last frame
+            let deltaTime = currentTime - lastTime;
+            
+            // Safety catch for when the browser tab is hidden
+            if (deltaTime > 100) deltaTime = 16; 
+            
+            // Move exactly based on time, not frames (fixes 60Hz/120Hz stutter)
+            exactScroll += (speedPerSecond * deltaTime) / 1000; 
             wishesBox.scrollTop = exactScroll;
             
-            // LOOP FIX: Added a 1px buffer because browser zoom/scaling can break exact math
+            // Loop smoothly back to the top
             if (wishesBox.scrollTop >= (wishesBox.scrollHeight - wishesBox.clientHeight - 1)) {
-                // Loop instantly back to the top
                 exactScroll = 0;
                 wishesBox.scrollTop = 0;
             }
         }
+        lastTime = currentTime;
         animationId = requestAnimationFrame(smoothScroll);
     }
 
-    // Start the engine
     animationId = requestAnimationFrame(smoothScroll);
 
-    // Brakes: Stop scrolling when interacting
     const pauseScroll = () => {
         isUserInteracting = true;
         clearTimeout(resumeTimeout);
-        // Sync our tracker with wherever the user manually scrolled to
         exactScroll = wishesBox.scrollTop;
     };
 
-    // Gas Pedal: Resume scrolling 2 seconds after they let go
     const resumeScroll = () => {
         clearTimeout(resumeTimeout);
         resumeTimeout = setTimeout(() => {
-            // Re-sync just before starting again in case of mobile momentum scrolling
             exactScroll = wishesBox.scrollTop;
+            lastTime = performance.now(); // Crucial: Reset time so it doesn't jump!
             isUserInteracting = false;
         }, 2000); 
     };
 
-    // Mobile Touch Listeners
     wishesBox.addEventListener('touchstart', pauseScroll, {passive: true});
     wishesBox.addEventListener('touchmove', pauseScroll, {passive: true});
     wishesBox.addEventListener('touchend', resumeScroll);
-    
-    // Desktop Mouse Listeners
     wishesBox.addEventListener('mouseenter', pauseScroll);
     wishesBox.addEventListener('mouseleave', resumeScroll);
-    
-    // Desktop Mouse Wheel Listener
-    wishesBox.addEventListener('wheel', () => {
-        pauseScroll();
-        resumeScroll();
-    }, {passive: true});
+    wishesBox.addEventListener('wheel', () => { pauseScroll(); resumeScroll(); }, {passive: true});
 }
 
 document.addEventListener('DOMContentLoaded', () => {

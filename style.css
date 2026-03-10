@@ -2,7 +2,8 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; position: r
 body { background-color: #ffffff; font-family: 'Montserrat', sans-serif; }
 
 /* Global Typography Elements */
-.details-title, .details-text, .save-date-btn, .time-number, .time-label, .stat-number, .stat-label, .wish-text, .wish-name, .action-btn, .footer-watermark p, .popup-title-dark, .close-popup-btn-dark, .contact-outline-name, .contact-outline-role, .location-details p, .loc-btn, label, input, select, textarea, .nav-label {
+.details-title, .details-text, .save-date-btn, .time-number, .time-label, .stat-number, .stat-label, .
+-text, .wish-name, .action-btn, .footer-watermark p, .popup-title-dark, .close-popup-btn-dark, .contact-outline-name, .contact-outline-role, .location-details p, .loc-btn, label, input, select, textarea, .nav-label {
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -62,7 +63,17 @@ body { background-color: #ffffff; font-family: 'Montserrat', sans-serif; }
 .stat-label { font-size: 0.8rem; color: #999; }
 
 /* --- Wishes List --- */
-.wishes-list { margin-bottom: 40px; padding: 0 20px; max-height: 250px; overflow-y: auto; }
+.wishes-list { 
+    margin-bottom: 40px; 
+    padding: 0 20px; 
+    max-height: 250px; 
+    overflow-y: auto; 
+    /* --- HARDWARE ACCELERATION FOR SMOOTH SCROLL --- */
+    transform: translateZ(0); 
+    -webkit-overflow-scrolling: touch; 
+    will-change: scroll-position;
+}
+
 .wishes-list::-webkit-scrollbar { width: 6px; }
 .wishes-list::-webkit-scrollbar-track { background: transparent; }
 .wishes-list::-webkit-scrollbar-thumb { background: rgba(153, 130, 94, 0.3); border-radius: 10px; }
