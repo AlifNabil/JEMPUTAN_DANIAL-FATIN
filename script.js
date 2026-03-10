@@ -1,71 +1,73 @@
-// Freeze the scroll as soon as the script loads
+// --- 1. INITIAL SETUP ---
 document.body.classList.add('no-scroll');
 
-// ==========================================
-// FORCE RESET TO TOP ON REFRESH
-// ==========================================
 if (history.scrollRestoration) {
     history.scrollRestoration = 'manual';
 }
 
 window.scrollTo(0, 0);
-
-// Extra safety: Reset again once everything is fully loaded
 window.onbeforeunload = function () {
     window.scrollTo(0, 0);
 };
 
-// ==========================================
-// 1. AUTO-SCROLL CONFIGURATION
-// ==========================================
+// --- 2. GLOBAL VARIABLES ---
 const scrollSpeed = 1; 
 const resumeDelay = 6000; 
-const scrollTarget = window; 
-
-let isScrolling = false; // Starts false so it doesn't move behind the cover
+let isScrolling = false; 
 let resumeTimer;
 let accumulatedScroll = 0; 
+let isPlaying = false;
 
-// ==========================================
-// 2. THE OPEN BUTTON (TRIGGERS MUSIC & SCROLL)
-// ==========================================
+// DOM Elements Cached for Performance
+const musicIcon = document.getElementById('music-btn').querySelector('.nav-icon');
+const music = document.getElementById('bgMusic');
+
+// --- 3. OPEN INVITATION (Triggered from Cover) ---
 function openInvitation() {
-
-    // Force scroll to top the moment they click "Buka Jemputan"
     window.scrollTo(0, 0);
-    // 1. Hide the cover
     document.getElementById('welcome-cover').classList.add('hidden');
-
-    // --- NEW: ADD THIS LINE HERE ---
-    // This removes the "no-scroll" lock so guests can now explore the page
     document.body.classList.remove('no-scroll');
     
-    // 2. Tell the YouTube player to start the music!
-    if (player && typeof player.playVideo === 'function') {
-        player.playVideo();
+    if (music) {
+        music.currentTime = 13; // Skips to best part
+        music.play().catch(error => console.log("Auto-play prevented", error));
         isPlaying = true;
-
-        // Change the bottom button icon from "Play" to "Pause"
-        const musicIcon = document.getElementById('music-btn').querySelector('.nav-icon');
         musicIcon.innerHTML = '<circle cx="12" cy="12" r="10"></circle><line x1="10" y1="15" x2="10" y2="9"></line><line x1="14" y1="15" x2="14" y2="9"></line>';
     }
 
-    // 3. Start the auto-scroll exactly 2 seconds after the music starts
     setTimeout(() => {
         isScrolling = true;
         requestAnimationFrame(startAutoScroll);
     }, 2000);    
 }
 
-// ==========================================
-// 3. THE ULTRA-SLOW SCROLL ENGINE
-// ==========================================
+// --- 4. MUSIC CONTROLS ---
+function togglePopupMusic() {
+    const popupMusicBtn = document.getElementById('popup-music-btn');
+    if (!popupMusicBtn || !music) return;
+    
+    const popupMusicIcon = popupMusicBtn.querySelector('.center-nav-icon');
+
+    if (isPlaying) {
+        music.pause();
+        isPlaying = false;
+        popupMusicIcon.innerHTML = '<circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon>';
+        musicIcon.innerHTML = '<circle cx="12" cy="12" r="10"></circle><polygon points="10 8 16 12 10 16 10 8"></polygon>';
+    } else {
+        music.play().catch(error => console.log("Play prevented", error));
+        isPlaying = true;
+        popupMusicIcon.innerHTML = '<circle cx="12" cy="12" r="10"></circle><line x1="10" y1="15" x2="10" y2="9"></line><line x1="14" y1="15" x2="14" y2="9"></line>';
+        musicIcon.innerHTML = '<circle cx="12" cy="12" r="10"></circle><line x1="10" y1="15" x2="10" y2="9"></line><line x1="14" y1="15" x2="14" y2="9"></line>';
+    }
+}
+
+// --- 5. AUTO-SCROLL ENGINE ---
 function startAutoScroll() {
     if (isScrolling) {
         accumulatedScroll += scrollSpeed;
         if (accumulatedScroll >= 1) {
             const pixelsToScroll = Math.floor(accumulatedScroll);
-            scrollTarget.scrollBy(0, pixelsToScroll);
+            window.scrollBy(0, pixelsToScroll);
             accumulatedScroll -= pixelsToScroll;
         }
     }
@@ -73,161 +75,80 @@ function startAutoScroll() {
 }
 
 function handleGuestInteraction() {
-    // Pause scroll when they touch the screen
     isScrolling = false;
     clearTimeout(resumeTimer);
-    
-    // Resume scroll 2 seconds after they let go
-    resumeTimer = setTimeout(() => {
-        isScrolling = true;
-    }, resumeDelay);
+    resumeTimer = setTimeout(() => { isScrolling = true; }, resumeDelay);
 }
 
-// Event Listeners for the smart brakes
 window.addEventListener('wheel', handleGuestInteraction, { passive: true });      
 window.addEventListener('touchstart', handleGuestInteraction, { passive: true }); 
 window.addEventListener('touchmove', handleGuestInteraction, { passive: true });  
 window.addEventListener('mousedown', handleGuestInteraction, { passive: true });  
 
-// --- Global Music Variables ---
-// (Leave this and everything below it exactly as you have it!)
-
-
-// --- Global Music Variables ---
-let player;
-let isPlaying = false;
-const musicBtn = document.getElementById('music-btn');
-
-// This function is automatically called by YouTube when the page loads
-// This function is automatically called by YouTube when the page loads
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('youtube-audio', {
-        height: '100%', 
-        width: '100%',  
-        videoId: 'IpFX2vq8HKw', // Your YouTube Video ID
-        playerVars: {
-            'autoplay': 0,
-            'controls': 1, 
-            'showinfo': 0,
-            'rel': 0,
-            'loop': 1,
-            'playlist': 'IpFX2vq8HKw', 
-            'start': 46  // <--- ADD THIS LINE! (Starts the song at 30 seconds)
-        }
-    });
-}
-
-
-// --- Countdown Timer Logic ---
-// Set the exact date and time of your event here
+// --- 6. COUNTDOWN TIMER (Optimized) ---
 const weddingDate = new Date("April 11, 2026 11:00:00").getTime();
+const daysEl = document.getElementById("days");
+const hoursEl = document.getElementById("hours");
+const minutesEl = document.getElementById("minutes");
+const secondsEl = document.getElementById("seconds");
 
-// Update the countdown every 1 second
 const countdownTimer = setInterval(function() {
+    const distance = weddingDate - new Date().getTime();
     
-    // Get today's date and time
-    const now = new Date().getTime();
-    
-    // Find the distance between now and the wedding date
-    const distance = weddingDate - now;
-    
-    // Time calculations for days, hours, minutes and seconds
+    if (distance < 0) {
+        clearInterval(countdownTimer);
+        document.querySelector(".countdown-container").innerHTML = "<p class='details-text'>The big day is here!</p>";
+        return;
+    }
+
     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
     
-    // Display the result (adds a '0' in front if the number is less than 10)
-    document.getElementById("days").innerText = days < 10 ? "0" + days : days;
-    document.getElementById("hours").innerText = hours < 10 ? "0" + hours : hours;
-    document.getElementById("minutes").innerText = minutes < 10 ? "0" + minutes : minutes;
-    document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
-    
-    // If the countdown is over, write some text
-    if (distance < 0) {
-        clearInterval(countdownTimer);
-        document.querySelector(".countdown-container").innerHTML = "<p class='details-text'>The big day is here!</p>";
-    }
-}, 1000); // 1000 milliseconds = 1 second
+    daysEl.innerText = days < 10 ? "0" + days : days;
+    hoursEl.innerText = hours < 10 ? "0" + hours : hours;
+    minutesEl.innerText = minutes < 10 ? "0" + minutes : minutes;
+    secondsEl.innerText = seconds < 10 ? "0" + seconds : seconds;
+}, 1000);
 
-
-// Google Sheets form submission logic
+// --- 7. GOOGLE SHEETS & RSVP LOGIC ---
 const scriptURL = 'https://script.google.com/macros/s/AKfycbziIeJN55S-v4S62ICkOq64S3SBiDP9lXDGzZHmy2NkpS6Mlpnt3HxheeB0aAbrMiFaSw/exec';
 const form = document.getElementById('customRsvpForm');
 const submitBtn = document.getElementById('submitBtn');
 
-// Google Sheets form submission logic - UPDATED FOR SMOOTHNESS
 form.addEventListener('submit', e => {
-    e.preventDefault(); // This is the "Brakes" - it stops the page from refreshing/jumping
-    
-    // 1. Prepare the button
+    e.preventDefault(); 
     submitBtn.innerText = 'Menghantar...';
     submitBtn.disabled = true;
 
-    // 2. Send the data to your Google Sheet
     fetch(scriptURL, { method: 'POST', body: new FormData(form)})
         .then(response => {
-            // 3. Clear the form fields
             form.reset(); 
             submitBtn.innerText = 'Berjaya Dihantar!';
-            submitBtn.style.backgroundColor = '#4CAF50'; // Green for success
+            submitBtn.style.backgroundColor = '#4CAF50'; 
             
-            // 4. Refresh the numbers & wishes
             loadRSVPData();
 
-            // 5. THE MAGIC SCROLL: 
-            // Instead of a jumping alert, we wait 1 second for the data to load, 
-            // then we smoothly glide the user to see the updated wishes list.
             setTimeout(() => {
                 submitBtn.innerText = 'Hantar Sekali Lagi';
                 submitBtn.disabled = false;
-                submitBtn.style.backgroundColor = ''; // Resets to original color
+                submitBtn.style.backgroundColor = ''; 
 
                 const wishesSection = document.getElementById('wishes-list');
                 if (wishesSection) {
-                    wishesSection.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'center' 
-                    });
+                    wishesSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }, 1500);
         })
         .catch(error => {
-            console.error('Error!', error.message);
             alert('Alamak! Sesuatu tidak kena. Sila cuba lagi.');
             submitBtn.innerText = 'Submit';
             submitBtn.disabled = false;
         });
 });
 
-// --- Scroll Animation Observer (The Slow Pop-up) ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Create the observer
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            // When the element comes into view, trigger the animation
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible'); 
-            } else {
-                // When the element leaves the screen, reset the animation!
-                entry.target.classList.remove('visible');
-            }
-        });
-    }, { 
- // --- NEW CENTER TRIGGER LOGIC ---
-        // Shrinks the invisible trigger box by 40% from the top and 40% from the bottom,
-        // meaning the animation only starts when the element enters the middle 20% of the screen.
-        rootMargin: '-30% 0px -30% 0px',
-        threshold: 0
-    });
-
-    // Tell the observer to watch everything with the 'fade-in' class
-    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-});
-
-// --- Fetch and Display Live Attendance & Wishes ---
 function loadRSVPData() {
-    // We use the exact same scriptURL you already have at the top of your file!
     fetch(scriptURL)
         .then(response => response.json())
         .then(data => {
@@ -235,161 +156,149 @@ function loadRSVPData() {
             let notAttendingCount = 0;
             let wishesHTML = '';
 
-// Reverse the data so the newest wishes appear at the top!
-        data.reverse().forEach(row => {
-            
-            // 1. Calculate Attendance (Total Heads)
-            if (row.session === 'Not Attending') {
-                // Count how many families declined
-                notAttendingCount++; 
-            } else if (row.session) { 
-                // If they are attending, calculate their family size
-                
-                // parseInt grabs the number from "2 pax". If it fails, it defaults to 0.
-                let adultsCount = parseInt(row.adults) || 0; 
-                
-                // parseInt grabs the number "1" or "2". "None" becomes 0.
-                let childrenCount = parseInt(row.children) || 0; 
-                
-                // Add this family's total to the grand total!
-                attendingCount += (adultsCount + childrenCount);
-            }
+            data.reverse().forEach(row => {
+                if (row.session === 'Not Attending') {
+                    notAttendingCount++; 
+                } else if (row.session) { 
+                    let adultsCount = parseInt(row.adults) || 0; 
+                    let childrenCount = parseInt(row.children) || 0; 
+                    attendingCount += (adultsCount + childrenCount);
+                }
 
-            // 2. Build the Wishes List
-            if (row.wishes && row.wishes.trim() !== '' && row.name) {
-                wishesHTML += `
-                    <div class="wish-item">
-                        <p class="wish-text">"${row.wishes}"</p>
-                        <p class="wish-name">${row.name}</p>
-                    </div>
-                `;
-            }
-        });
+                if (row.wishes && row.wishes.trim() !== '' && row.name) {
+                    wishesHTML += `<div class="wish-item"><p class="wish-text">"${row.wishes}"</p><p class="wish-name">${row.name}</p></div>`;
+                }
+            });
 
-            // 3. Inject the calculations into your HTML
             document.getElementById('attending-count').innerText = attendingCount;
             document.getElementById('not-attending-count').innerText = notAttendingCount;
             
-            // If there are wishes, show them. If not, show a placeholder message.
+            const wishesList = document.getElementById('wishes-list');
             if (wishesHTML !== '') {
-                document.getElementById('wishes-list').innerHTML = wishesHTML;
+                wishesList.innerHTML = wishesHTML;
                 startWishesAutoScroll();
             } else {
-                document.getElementById('wishes-list').innerHTML = '<p class="wish-text">Be the first to leave a wish!</p>';
+                wishesList.innerHTML = '<p class="wish-text">Jadilah yang pertama memberi ucapan!</p>';
             }
         })
         .catch(error => console.error('Error loading RSVP data:', error));
 }
-
-// Tell the webpage to load the data the moment someone opens the site
 document.addEventListener('DOMContentLoaded', loadRSVPData);
 
-// --- Auto-Scroll Logic for Wishes ---
-// --- Updated Smooth Auto-Scroll Logic for Wishes ---
+// --- 8. WISHES SCROLL & FADE-IN OBSERVER ---
 function startWishesAutoScroll() {
     const wishesBox = document.getElementById('wishes-list');
     let animationId;
-    let currentScroll = wishesBox.scrollTop;
+    let isUserInteracting = false;
+    let resumeTimeout;
+    
+    // We use a separate variable to track exact fractional pixels for super smooth, slow scrolling
+    let exactScroll = wishesBox.scrollTop;
 
     function smoothScroll() {
-        // We move in tiny fractions (0.5) for a "floating" feel
-        currentScroll += 0.5; 
-        wishesBox.scrollTop = currentScroll;
-
-        // Reset to top if we hit the end
-        if (currentScroll >= (wishesBox.scrollHeight - wishesBox.clientHeight)) {
-            currentScroll = 0;
+        if (!isUserInteracting) {
+            // SLOWER SPEED: Changed from 0.5 to 0.2
+            exactScroll += 0.2; 
+            wishesBox.scrollTop = exactScroll;
+            
+            // LOOP FIX: Added a 1px buffer because browser zoom/scaling can break exact math
+            if (wishesBox.scrollTop >= (wishesBox.scrollHeight - wishesBox.clientHeight - 1)) {
+                // Loop instantly back to the top
+                exactScroll = 0;
+                wishesBox.scrollTop = 0;
+            }
         }
-
-        // Only keep moving if the user isn't touching it
         animationId = requestAnimationFrame(smoothScroll);
     }
 
     // Start the engine
     animationId = requestAnimationFrame(smoothScroll);
 
-    // UX: Pause on interaction
-    const pauseScroll = () => cancelAnimationFrame(animationId);
-    const resumeScroll = () => animationId = requestAnimationFrame(smoothScroll);
+    // Brakes: Stop scrolling when interacting
+    const pauseScroll = () => {
+        isUserInteracting = true;
+        clearTimeout(resumeTimeout);
+        // Sync our tracker with wherever the user manually scrolled to
+        exactScroll = wishesBox.scrollTop;
+    };
 
-    wishesBox.addEventListener('mouseenter', pauseScroll);
-    wishesBox.addEventListener('touchstart', pauseScroll);
-    wishesBox.addEventListener('mouseleave', resumeScroll);
+    // Gas Pedal: Resume scrolling 2 seconds after they let go
+    const resumeScroll = () => {
+        clearTimeout(resumeTimeout);
+        resumeTimeout = setTimeout(() => {
+            // Re-sync just before starting again in case of mobile momentum scrolling
+            exactScroll = wishesBox.scrollTop;
+            isUserInteracting = false;
+        }, 2000); 
+    };
+
+    // Mobile Touch Listeners
+    wishesBox.addEventListener('touchstart', pauseScroll, {passive: true});
+    wishesBox.addEventListener('touchmove', pauseScroll, {passive: true});
     wishesBox.addEventListener('touchend', resumeScroll);
+    
+    // Desktop Mouse Listeners
+    wishesBox.addEventListener('mouseenter', pauseScroll);
+    wishesBox.addEventListener('mouseleave', resumeScroll);
+    
+    // Desktop Mouse Wheel Listener
+    wishesBox.addEventListener('wheel', () => {
+        pauseScroll();
+        resumeScroll();
+    }, {passive: true});
 }
 
-// ==========================================
-// BOTTOM NAVIGATION POP-UP CONTROLS
-// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) entry.target.classList.add('visible'); 
+            else entry.target.classList.remove('visible');
+        });
+    }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
 
-// 1. Music (Lagu) Button
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+});
+
+// --- 9. POPUP NAVIGATION ---
+function closePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) popup.classList.remove('show');
+}
+
 document.getElementById('music-btn').addEventListener('click', (e) => {
     e.preventDefault(); 
-    // Close all other popups
-    document.getElementById('contact-popup').classList.remove('show');
-    document.getElementById('lokasi-popup').classList.remove('show');
-    // Toggle this popup
+    closePopup('contact-popup');
+    closePopup('lokasi-popup');
     document.getElementById('music-popup').classList.toggle('show');
 });
 
-// 2. Contact (Hubungi) Button
 document.getElementById('contact-nav-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    // Close all other popups
-    document.getElementById('music-popup').classList.remove('show');
-    document.getElementById('lokasi-popup').classList.remove('show');
-    // Toggle this popup
+    closePopup('music-popup');
+    closePopup('lokasi-popup');
     document.getElementById('contact-popup').classList.toggle('show');
 });
 
-// 3. Location (Lokasi) Button
 document.getElementById('lokasi-nav-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    // Close all other popups
-    document.getElementById('music-popup').classList.remove('show');
-    document.getElementById('contact-popup').classList.remove('show');
-    // Toggle this popup
+    closePopup('music-popup');
+    closePopup('contact-popup');
     document.getElementById('lokasi-popup').classList.toggle('show');
 });
 
-// ==========================================
-// "TUTUP" (CLOSE) BUTTONS
-// ==========================================
-document.getElementById('close-music-btn').addEventListener('click', () => {
-    document.getElementById('music-popup').classList.remove('show');
-});
-
-document.getElementById('close-contact-btn').addEventListener('click', () => {
-    document.getElementById('contact-popup').classList.remove('show');
-});
-
-document.getElementById('close-lokasi-btn').addEventListener('click', () => {
-    document.getElementById('lokasi-popup').classList.remove('show');
-});
-
-// ==========================================
-// COPY ACCOUNT NUMBER FUNCTION (For Gift)
-// ==========================================
+// --- 10. UTILITIES ---
 function copyText(elementId) {
-    // Get the text from the HTML
     const textToCopy = document.getElementById(elementId).innerText;
-    
-    // Copy to clipboard
     navigator.clipboard.writeText(textToCopy).then(() => {
-        // Change the button text temporarily to "Disalin!" (Copied!)
         const btn = event.target;
         const originalText = btn.innerText;
         btn.innerText = "Disalin!";
         btn.style.backgroundColor = "#7A7A7A";
         btn.style.color = "#fff";
-        
-        // Reset button after 2 seconds
         setTimeout(() => {
             btn.innerText = originalText;
             btn.style.backgroundColor = "transparent";
             btn.style.color = "#555";
         }, 2000);
-    }).catch(err => {
-        console.error('Failed to copy!', err);
-    });
+    }).catch(err => console.error('Failed to copy!', err));
 }
