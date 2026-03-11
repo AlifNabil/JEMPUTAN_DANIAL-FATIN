@@ -2,8 +2,7 @@ html, body { margin: 0; padding: 0; width: 100%; overflow-x: hidden; position: r
 body { background-color: #ffffff; font-family: 'Montserrat', sans-serif; }
 
 /* Global Typography Elements */
-.details-title, .details-text, .save-date-btn, .time-number, .time-label, .stat-number, .stat-label, .
--text, .wish-name, .action-btn, .footer-watermark p, .popup-title-dark, .close-popup-btn-dark, .contact-outline-name, .contact-outline-role, .location-details p, .loc-btn, label, input, select, textarea, .nav-label {
+.details-title, .details-text, .save-date-btn, .time-number, .time-label, .stat-number, .stat-label, .wish-text, .wish-name, .action-btn, .footer-watermark p, .popup-title-dark, .close-popup-btn-dark, .contact-outline-name, .contact-outline-role, .location-details p, .loc-btn, label, input, select, textarea, .nav-label {
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -23,21 +22,35 @@ body { background-color: #ffffff; font-family: 'Montserrat', sans-serif; }
 /* --- Main Layout --- */
 .mobile-wrapper { width: 100%; max-width: 410px; margin: 0 auto; min-height: 100vh; position: relative; overflow: hidden; background-color: #F8F5EF; background-image: url('image/floral_background.png'); background-size: 100% auto; background-position: top center; background-repeat: no-repeat; box-shadow: 0 0 20px rgba(0,0,0,0.5); padding: 0px 20px 100px 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; }
 
-/* --- Hero Section --- */
-.hero-section { width: 100%; height: auto; display: flex; flex-direction: column; justify-content: flex-start; padding-top: 220px; padding-bottom: 250px; align-items: center; text-align: center; margin-bottom: 0px; }
-.hero-subtitle { font-size: 0.85rem; letter-spacing: 2px; color: #666; margin-bottom: 40px; }
-.hero-names { font-size: 3.5rem; color: #99845E; margin: 0; line-height: 1.1; font-weight: 500; letter-spacing: 1px; }
-.hero-ampersand { font-size: 2.5rem; font-style: italic; color: #99845E; }
-.hero-date { font-size: 0.95rem; letter-spacing: 1.5px; color: #666; margin-top: 24px; }
+/* --- Hero Section (RESPONSIVE FIXES APPLIED HERE) --- */
+.hero-section { width: 100%; height: auto; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; text-align: center; margin-bottom: 0px; 
+    /* Padding scales perfectly with the background archway image */
+    padding-top: 54%; 
+    padding-bottom: 60%; 
+}
+.hero-subtitle { font-size: 0.85rem; letter-spacing: 2px; color: #666; 
+    /* Dynamically shrinks margin on smaller screens */
+    margin-bottom: clamp(20px, 8vw, 40px); 
+}
+.hero-names { color: #99845E; margin: 0; line-height: 1.1; font-weight: 500; letter-spacing: 1px; 
+    /* Dynamically shrinks the names on narrow phones so they don't touch the borders */
+    font-size: clamp(2.5rem, 12vw, 3.5rem); 
+}
+.hero-ampersand { font-style: italic; color: #99845E; 
+    font-size: clamp(1.8rem, 8vw, 2.5rem); 
+}
+.hero-date { font-size: 0.95rem; letter-spacing: 1.5px; color: #666; 
+    margin-top: clamp(12px, 5vw, 24px); 
+}
 
 /* --- Info Section & Typography --- */
 .info-section { width: 100%; padding: 40px 20px; text-align: center; margin-bottom: 40px; background-color: rgba(255, 255, 255, 0.4); border-radius: 15px 15px 0 0; margin-top: -40px; }
 .info-small { font-size: 0.85rem; color: #666; margin-bottom: 20px; line-height: 1.6; font-weight: 400; }
-.parents-names { font-family: 'Great Vibes', cursive; font-size: 1.6rem; color: #999999; margin: 10px 0 20px 0 !important; font-weight: 400; line-height: 1.2; }
+.parents-names { font-family: 'Great Vibes', cursive; font-size: clamp(1.4rem, 6vw, 1.6rem); color: #999999; margin: 10px 0 20px 0 !important; font-weight: 400; line-height: 1.2; }
 .ampersand-small { font-family: 'Great Vibes', cursive; font-size: 1.8rem; }
 .and-separator { font-size: 1.1rem; color: #99845E; margin-top: -5px !important; margin-bottom: 2px; font-weight: 400; }
 
-.full-names { font-family: 'Cinzel', serif; font-size: 1.8rem; color: #99845E; margin: 25px 0 30px 0; font-weight: 500; line-height: 1.4; letter-spacing: 1px; font-variant: small-caps; }
+.full-names { font-family: 'Cinzel', serif; font-size: clamp(1.4rem, 6vw, 1.8rem); color: #99845E; margin: 25px 0 30px 0; font-weight: 500; line-height: 1.4; letter-spacing: 1px; font-variant: small-caps; }
 .ampersand-large { font-family: 'Cinzel', serif; font-size: 1.1rem; color: #bca47a; display: block; margin: 10px 0; font-style: normal; }
 
 .details-block { margin-bottom: 25px; }
@@ -69,8 +82,6 @@ body { background-color: #ffffff; font-family: 'Montserrat', sans-serif; }
     max-height: 250px; 
     overflow-y: auto; 
     -webkit-overflow-scrolling: touch; 
-    
-    /* --- SUB-PIXEL SMOOTHING FIX --- */
     transform: translate3d(0, 0, 0);
     backface-visibility: hidden;
     perspective: 1000px;
@@ -82,15 +93,12 @@ body { background-color: #ffffff; font-family: 'Montserrat', sans-serif; }
 
 .wish-item { 
     margin-bottom: 25px; 
-    
-    /* --- FORCES TEXT TO GLIDE BETWEEN PIXELS --- */
     transform: translateZ(0); 
     backface-visibility: hidden;
 }
-.wish-text { font-style: italic; color: #888; font-size: 0.95rem; margin: 0 0 5px 0; }
+
 .wish-name { font-weight: 600; color: #666; font-size: 0.9rem; margin: 0; }
 
-/* HERE IS THE FIX: Added word-wrap commands to prevent overflowing text */
 .wish-text { 
     font-style: italic; 
     color: #888; 
